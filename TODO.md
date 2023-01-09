@@ -7,9 +7,9 @@ Phase 1
 -------
 
 * Engine
-  - Shortener algorithm
-  - Status model
-  - DB SQL (2 tables: links and visits)
+  - ~~Shortener algorithm~~
+  - ~~Status model~~
+  - ~~DB SQL (2 tables: links and visits)~~
 
 * Application
   - Entity classes + Enum for statuses
@@ -20,7 +20,7 @@ Phase 1
     - Visits (base and aggregate -- for links; paginal throw links)
   - Service layer
   - Shortener Engine
-  - Common stuff (Result object, Abstract service, Utils)
+  - Common stuff (Result object, Utils)
 
 
 Phase 2
@@ -45,7 +45,7 @@ Phase 3
   - CI with GitHub CI
   - Docker image
   - Grafana UI with prometheus based storage (with json representation in file in repo)
-  - K8S deployment (test with mini kub)
+  - K8S deployment (test with minikub)
 
 
 Phase 4
@@ -59,8 +59,16 @@ Phase 4
 Phase 5
 -------
 
-* Custom links shor URL
+* Custom links short URL
+  - Custom generator with checking with existing
+  - Generator resolver
+  - Stop list
+
+* Routing DS for read from replica DB, and write to primary
 
 * QR code generator for links
+
+Phase 6
+-------
 
 * Maybe some UI (not only REST API)

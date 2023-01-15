@@ -12,38 +12,40 @@ Phase 1
   - ~~DB SQL (2 tables: links and visits)~~
 
 * Application
-  - Entity classes + Enum for statuses
-  - Repository layer (with search on DTO with Criteria)
-  - DTO + Mappers
-  - Controller layer (Swagger + API + Validation) 
-    - Links
+  - ~~Shortener Engine~~
+  - ~~Entity classes + Enum for statuses~~
+  - ~~Common stuff (Result object, Utils)~~
+  - ~~Repository layer (with search on DTO with Criteria)~~
+  - ~~DTO + Mappers~~
+  - ~~Service layer~~
+  - ~~Controller layer (Swagger + API + Validation)~~
+    - ~~Links~~
     - Visits (base and aggregate -- for links; paginal throw links)
-  - Service layer
-  - Shortener Engine
-  - Common stuff (Result object, Utils)
 
 
 Phase 2
 -------
 
-* Metrics
-  - Prometheus and micrometer
-
-* Test
-  - Engine test (unit)
+* Tests
+  - ~~Engine test (unit)~~
   - UseCase tests (mix of E2E and integration test)
 
 * Description and documentation
   - README about app
   - Comments in DB and table for each status type with values
 
+* Infrastructure
+  - CI with GitHub CI
+  - Docker image
+
 
 Phase 3
 -------
 
+* Metrics
+  - Prometheus and micrometer
+
 * Infrastructure
-  - CI with GitHub CI
-  - Docker image
   - Grafana UI with prometheus based storage (with json representation in file in repo)
   - K8S deployment (test with minikub)
 
@@ -56,19 +58,25 @@ Phase 4
   - Password auth for links visit (custom popup or browser default pop)
   - More test for all above
 
-Phase 5
--------
-
 * Custom links short URL
   - Custom generator with checking with existing
   - Generator resolver
   - Stop list
 
-* Routing DS for read from replica DB, and write to primary
+
+Phase 5
+-------
+
+* Routing DS for read from replica DB, and write to primary (?)
 
 * QR code generator for links
+
+* Saves not found links
+
+* Visit counter 
+
 
 Phase 6
 -------
 
-* Maybe some UI (not only REST API)
+* Maybe some UI: not only REST API, but with vaadin\simple jsp

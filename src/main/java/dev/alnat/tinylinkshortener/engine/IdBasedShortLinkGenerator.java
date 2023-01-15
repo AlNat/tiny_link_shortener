@@ -10,13 +10,13 @@ import java.util.Optional;
 /**
  * ShortLink Generator strategy based on one global DB sequence,
  * that's convert value from base-ten numeric system to alphabetic-base numeric system
- *
+ * <p>
  * Algo:
  * Retrieve new id from DB sequence
  * Convert it from base-ten numeric system to ALPHABETIC-based system
  *  for example: id 5000 -> aKs
  * done
- *
+ * <p>
  * Created by @author AlNat on 10.01.2023.
  * Licensed by Apache License, Version 2.0
  */
@@ -26,10 +26,15 @@ import java.util.Optional;
 public class IdBasedShortLinkGenerator implements ShortLinkGenerator {
 
     private static final String SEQUENCE_NAME = "short_link_generator_id";
-    private static final String SELECT_QUERY = "select nextval('" +  SEQUENCE_NAME + "')";
+    private static final String SELECT_QUERY = "SELECT nextval('" +  SEQUENCE_NAME + "')";
 
     private final EntityManager entityManager;
 
+
+    @Override
+    public ShortLinkMode getMode() {
+        return ShortLinkMode.SEQUENCE;
+    }
 
     @Override
     public Optional<String> generateShortLink() {

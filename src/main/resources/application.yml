@@ -27,7 +27,7 @@ spring:
         order_updates: true
         batch_versioned_data: true
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/tiny_link_shortener}?reWriteBatchedInserts=true
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/tiny_link_shortener}?reWriteBatchedInserts=true&currentSchema=tiny_link_shortener
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -51,7 +51,9 @@ spring:
     locations: classpath:/db
     schemas: tiny_link_shortener
     baseline-on-migrate: true
-
+  jackson:
+    serialization:
+      WRITE_DATE_KEYS_AS_TIMESTAMPS: true
   task:
     # thread pool for async method (for long-pooling request)
     execution:
@@ -77,12 +79,18 @@ springdoc:
     operations-sorter: alpha
     tags-sorter: alpha
     disable-swagger-default-url: true
-    supportedSubmitMethods: ${SWAGGER_OPERATIONS:"get", "post"}
+    supportedSubmitMethods: ${SWAGGER_OPERATIONS:"get", "post", "delete"}
   api-docs:
     enabled: ${ENABLE_SWAGGER:true}
   cache:
     disabled: false
 
 custom:
+  short-link-generator-mode: ${SHORT_LINK_GENERATOR:SEQUENCE}
   metrics:
     metric-prefix: ${METRIC_PREFIX:}
+  paging:
+    default-timeout: ${DEFAULT_TASK_PAGING_TIMEOUT:10s}
+  proxy:
+    is-behind-poxy: ${IS_BEHIND_PROXY:false}
+    client-ip-address-header: ${CLIENT_IP_ADDRESS_HEADER:X-IP-ADDRESS}

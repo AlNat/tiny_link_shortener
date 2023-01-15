@@ -26,7 +26,7 @@ public class NumericToTextConverter {
     private static final String ALPHABET = "_abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789-";
     private static final char[] ALPHABET_ARRAY = ALPHABET.toCharArray();
     private static final int BASE = ALPHABET.length(); // 56 FYI
-    private static final char TRAILING_ZERO = ALPHABET_ARRAY[0]; // _ FYI
+    private static final char ZERO_SYMBOL = ALPHABET_ARRAY[0]; // _ FYI
 
 
     public static String generateShortLink(final Long externalId) {
@@ -50,7 +50,7 @@ public class NumericToTextConverter {
         Assert.hasText(externalCode, "ID should be not empty!");
 
         var formatted = externalCode.strip().intern();
-        var code = cutTrailingZero(formatted);
+        var code = cutLeadingZero(formatted);
 
         long link = 0;
         for (int t = 0; t < code.length(); t++) { // Going by digits
@@ -75,8 +75,8 @@ public class NumericToTextConverter {
         return link;
     }
 
-    private static String cutTrailingZero(String code) {
-        if (code.charAt(0) != TRAILING_ZERO) {
+    private static String cutLeadingZero(String code) {
+        if (code.charAt(0) != ZERO_SYMBOL) {
             return code;
         }
 
@@ -84,7 +84,7 @@ public class NumericToTextConverter {
         int prefixEnd = -1;
 
         for (int i = 0; i < codeChars.length; i++) {
-            if (codeChars[i] == TRAILING_ZERO) {
+            if (codeChars[i] == ZERO_SYMBOL) {
                 continue;
             }
 

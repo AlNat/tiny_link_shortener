@@ -8,6 +8,8 @@ import java.util.Optional;
  */
 public interface ShortLinkGenerator {
 
+    ShortLinkMode getMode();
+
     Optional<String> generateShortLink();
 
 }

@@ -6,8 +6,8 @@ on:
     branches:
       - 'main'
       - 'dev'
-  # At MR to main and dev brach
-  pull-request:
+
+  pull_request:
     types: [ opened, reopened ]
     branches:
       - 'main'

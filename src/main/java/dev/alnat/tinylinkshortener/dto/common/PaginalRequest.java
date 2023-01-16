@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.io.Serializable;
 
 /**
  * Created by @author AlNat on 10.01.2023.
@@ -14,7 +15,7 @@ import javax.validation.constraints.Min;
 @Data
 @ToString
 @Schema(description = "Sort by this filed")
-public abstract class PaginalRequest {
+public abstract class PaginalRequest implements Serializable {
 
     @Schema(description = "Limit of request data", requiredMode = Schema.RequiredMode.NOT_REQUIRED, defaultValue = "100")
     @Min(1) @Max(100)

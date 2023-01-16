@@ -1,5 +1,6 @@
 package dev.alnat.tinylinkshortener.service;
 
+import dev.alnat.tinylinkshortener.dto.LinkVisitPageResult;
 import dev.alnat.tinylinkshortener.dto.LinkVisitSearchRequest;
 import dev.alnat.tinylinkshortener.dto.LinkVisitStatistic;
 import dev.alnat.tinylinkshortener.dto.VisitOutDTO;
@@ -29,12 +30,14 @@ public interface VisitService {
     List<VisitOutDTO> findByParams(LinkVisitSearchRequest request);
 
 
-    PaginalResult<VisitOutDTO> searchRawStatistics(final LinkVisitSearchRequest request);
+    LinkVisitPageResult searchRawStatistics(final LinkVisitSearchRequest request);
 
-    void searchRawStatisticsAsync(final LinkVisitSearchRequest request, DeferredResult<PaginalResult<VisitOutDTO>> result);
+    void searchRawStatisticsAsync(final LinkVisitSearchRequest request,
+                                  DeferredResult<LinkVisitPageResult> result);
 
     Result<LinkVisitStatistic> searchAggregateStatistics(final String shortLink);
 
-    void searchAggregateStatisticsAsync(final String shortLink, DeferredResult<Result<LinkVisitStatistic>> result);
+    void searchAggregateStatisticsAsync(final String shortLink,
+                                        DeferredResult<Result<LinkVisitStatistic>> result);
 
 }

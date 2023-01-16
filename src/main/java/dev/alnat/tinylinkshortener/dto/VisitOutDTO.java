@@ -42,10 +42,10 @@ public class VisitOutDTO implements Serializable {
     @Schema(description = "Information about link", requiredMode = Schema.RequiredMode.REQUIRED)
     private LinkOutDTO link;
 
-    @Schema(description = "Clients ip address", example = "192.168.0.1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Clients ip address", example = "192.168.0.1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String ip;
 
-    @Schema(description = "Clients user agent", example = "IE6", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Clients user agent", example = "IE6", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String userAgent;
 
 }

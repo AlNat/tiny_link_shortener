@@ -57,8 +57,8 @@ public class ShortLinkController {
     })
     @GetMapping("{shortlink}")
     public ResponseEntity<String> redirect(@Parameter(in = ParameterIn.PATH, required = true, description = "Shortlink")
-                                               @PathVariable final String shortlink,
-                                           @Parameter(hidden = true) @RequestHeader("User-Agent") String userAgent,
+                                            @PathVariable final String shortlink,
+                                           @Parameter(hidden = true) @RequestHeader(value = "User-Agent", required = false) String userAgent,
                                            @Parameter(hidden = true) @RequestHeader HttpHeaders headers,
                                            @Parameter(hidden = true) HttpServletRequest request) {
         String clientIp;

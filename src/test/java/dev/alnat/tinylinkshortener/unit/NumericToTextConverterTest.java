@@ -58,20 +58,20 @@ class NumericToTextConverterTest {
             "_abc",
             "__abc"
     })
-    @DisplayName("Test that trailing zeros in short-based alphabetic is ignored")
-    void trailingZeroAlternativeTest(final String code) {
+    @DisplayName("Test that leading zeros in short-based alphabetic is ignored")
+    void leadingZeroAlternativeTest(final String code) {
         final long id = 3251L;
 
         Assertions.assertEquals(
                 id, NumericToTextConverter.generateIdFromShortLink(code),
-                "Trailing zero alternative should be ignored, did algo was changed?"
+                "leading zero alternative should be ignored, did algo was changed?"
         );
     }
 
 
     @ParameterizedTest
     @ValueSource(strings = {
-            // trailng zeros
+            // leading zeros
             "_",
             "___",
             "___ ",

@@ -40,7 +40,7 @@ public class VisitSearchRepositoryImpl implements VisitSearchRepository {
         // Join Link if need filter with it
         if (StringUtils.hasText(filter.getShortLink())) {
             Join<Visit, Link> linkJoin = table.join("link");
-            conditions.add(cb.equal(linkJoin.get("short_link"), filter.getShortLink()));
+            conditions.add(cb.equal(linkJoin.get("shortLink"), filter.getShortLink()));
         }
 
         // Status

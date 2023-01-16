@@ -1,9 +1,9 @@
 package dev.alnat.tinylinkshortener.service.impl;
 
+import dev.alnat.tinylinkshortener.dto.LinkVisitPageResult;
 import dev.alnat.tinylinkshortener.dto.LinkVisitSearchRequest;
 import dev.alnat.tinylinkshortener.dto.LinkVisitStatistic;
 import dev.alnat.tinylinkshortener.dto.VisitOutDTO;
-import dev.alnat.tinylinkshortener.dto.common.PaginalResult;
 import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.dto.common.ResultFactory;
 import dev.alnat.tinylinkshortener.mapper.LinkMapper;
@@ -85,11 +85,9 @@ public class VisitServiceImpl implements VisitService {
 
 
     @Override
-    public PaginalResult<VisitOutDTO> searchRawStatistics(final LinkVisitSearchRequest request) {
+    public LinkVisitPageResult searchRawStatistics(final LinkVisitSearchRequest request) {
         var page = repository.search(request);
-
-        PaginalResult<VisitOutDTO> result = new PaginalResult<>();
-        result.setRequest(request);
+        var result = new LinkVisitPageResult(request);
 
         if (page.isEmpty()) {
             result.setCode(404);
@@ -100,7 +98,7 @@ public class VisitServiceImpl implements VisitService {
             result.setHasNextPage(true);
             result.setData(mapper.entityToDTO(Utils.getSubList(page, request.getLimit())));
         } else {
-            result.setHasNextPage(true);
+            result.setHasNextPage(false);
             result.setData(mapper.entityToDTO(page));
         }
 
@@ -110,7 +108,7 @@ public class VisitServiceImpl implements VisitService {
     @Override
     @Async
     public void searchRawStatisticsAsync(final LinkVisitSearchRequest request,
-                                         DeferredResult<PaginalResult<VisitOutDTO>> result) {
+                                         DeferredResult<LinkVisitPageResult> result) {
         var res = searchRawStatistics(request);
 
         if (result.isSetOrExpired()) {

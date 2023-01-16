@@ -3,7 +3,7 @@ TODO LIST
 
 Phase might be equivalent of a sprint
 
-Phase 1
+Phase 1 - MVP1
 -------
 
 * Engine
@@ -20,37 +20,37 @@ Phase 1
   - ~~Service layer~~
   - ~~Controller layer (Swagger + API + Validation)~~
     - ~~Links~~
-    - Visits (base and aggregate -- for links; paginal throw links)
+    - ~~Visits (base and aggregate -- for links; paginal throw links)~~
 
 
-Phase 2
+Phase 2 - MVP2
 -------
 
-* Tests
+* ~~Tests~~
   - ~~Engine test (unit)~~
-  - UseCase tests (mix of E2E and integration test)
+  - ~~UseCase tests (mix of E2E and integration test)~~
+
+* ~~Infrastructure~~
+  - ~~CI with GitHub CI~~
+  - ~~Docker image~~
+
+
+Phase 3 - Ops
+-------
+
+* Metrics
+  - Prometheus and micrometer
 
 * Description and documentation
   - README about app
   - Comments in DB and table for each status type with values
 
 * Infrastructure
-  - CI with GitHub CI
-  - Docker image
-
-
-Phase 3
--------
-
-* Metrics
-  - Prometheus and micrometer
-
-* Infrastructure
   - Grafana UI with prometheus based storage (with json representation in file in repo)
   - K8S deployment (test with minikub)
 
 
-Phase 4
+Phase 4 - Features1
 -------
 
 * Security
@@ -64,19 +64,17 @@ Phase 4
   - Stop list
 
 
-Phase 5
+Phase 5 - Features2
 -------
-
-* Routing DS for read from replica DB, and write to primary (?)
 
 * QR code generator for links
 
-* Saves not found links
-
-* Visit counter 
+* Saves not found links in visits
 
 
-Phase 6
+Phase 6 - Features3
 -------
 
 * Maybe some UI: not only REST API, but with vaadin\simple jsp
+
+* Routing DS for read from replica DB, and write to primary (?)

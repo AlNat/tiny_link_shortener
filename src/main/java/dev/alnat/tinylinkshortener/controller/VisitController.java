@@ -1,10 +1,9 @@
 package dev.alnat.tinylinkshortener.controller;
 
 import brave.Tracer;
+import dev.alnat.tinylinkshortener.dto.LinkVisitPageResult;
 import dev.alnat.tinylinkshortener.dto.LinkVisitSearchRequest;
 import dev.alnat.tinylinkshortener.dto.LinkVisitStatistic;
-import dev.alnat.tinylinkshortener.dto.VisitOutDTO;
-import dev.alnat.tinylinkshortener.dto.common.PaginalResult;
 import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.dto.common.ResultFactory;
 import dev.alnat.tinylinkshortener.service.VisitService;
@@ -41,7 +40,7 @@ import java.time.Duration;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/visit/", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/visit", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "REST API for analysis visits for links")
 public class VisitController {
 
@@ -57,10 +56,10 @@ public class VisitController {
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    public DeferredResult<PaginalResult<VisitOutDTO>> searchRawStatistics(
+    public DeferredResult<LinkVisitPageResult> searchRawStatistics(
             @Parameter(in = ParameterIn.QUERY, required = true, description = "Filter to search")
             @ParameterObject @Valid final LinkVisitSearchRequest request) {
-        var deferredResult = new DeferredResult<PaginalResult<VisitOutDTO>>(pagingTimeout.toMillis());
+        var deferredResult = new DeferredResult<LinkVisitPageResult>(pagingTimeout.toMillis());
 
         deferredResult.onTimeout(() -> deferredResult.setErrorResult(ResultFactory.timeout()));
 

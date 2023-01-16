@@ -69,6 +69,13 @@ public class Link {
     private List<Visit> visitList;
 
 
+    public Integer getCurrentVisitCount() {
+        if (currentVisitCount == null) {
+            return 0;
+        }
+        return currentVisitCount;
+    }
+
     @Transient
     public boolean isExpired() {
         if (availableTo == null) {

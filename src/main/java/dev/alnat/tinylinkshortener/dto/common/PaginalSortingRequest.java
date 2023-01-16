@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * Created by @author AlNat on 10.01.2023.
  * Licensed by Apache License, Version 2.0
@@ -16,7 +18,7 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "Request with sorting and pagination")
-public abstract class PaginalSortingRequest extends PaginalRequest {
+public abstract class PaginalSortingRequest extends PaginalRequest implements Serializable {
 
     @Schema(description = "Sort by this filed")
     private String filedSort;

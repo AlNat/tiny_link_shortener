@@ -6,6 +6,11 @@ on:
     branches:
       - 'main'
       - 'dev'
+  pull-request:
+    types: [ opened, reopened ]
+    branches:
+      - 'main'
+      - 'dev'
 
 jobs:
   # Build by Maven and check tests
@@ -22,7 +27,7 @@ jobs:
         java-version: 17
 
     - name: Build with Maven
-      run: mvn -s $GITHUB_WORKSPACE/.github/workflows/github-maven-settings.xml clean package --file pom.xml
+      run: mvn clean package --file pom.xml
       env:
         USER_NAME: ${{ github.actor }}
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}

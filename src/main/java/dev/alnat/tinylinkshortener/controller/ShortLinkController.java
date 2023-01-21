@@ -8,8 +8,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +33,7 @@ import java.util.Optional;
  */
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@Setter
 @RequestMapping(value = "/s/", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Controller for requesting shortlinks", description = "Front-end controller for users")
 public class ShortLinkController {
@@ -40,14 +41,28 @@ public class ShortLinkController {
     private final Tracer tracer;
     private final RedirectService service;
 
-    @Value("classpath:not_found_page.html")
-    private Resource notFoundPage;
+    private String htmlFromResources;
 
     @Value("${custom.proxy.is-behind-poxy}")
     private Boolean isProxy;
 
     @Value("${custom.proxy.client-ip-address-header}")
     private String ipAddressHeaderName;
+
+    @Autowired
+    public ShortLinkController(Tracer tracer,
+                               RedirectService service,
+                               @Value("classpath:not_found_page.html") Resource notFoundPage) {
+        this.tracer = tracer;
+        this.service = service;
+
+        try {
+            this.htmlFromResources = StreamUtils.copyToString(notFoundPage.getInputStream(), Charset.defaultCharset());
+        } catch (IOException e) {
+            log.error("Exception when reading HTML from resources!", e);
+            this.htmlFromResources = "Sorry, but shortlink is not found :("; // Default error
+        }
+    }
 
     @Operation(summary = "Redirect for short link visit")
     @ApiResponses(value = {
@@ -81,15 +96,6 @@ public class ShortLinkController {
 
         if (found.isEmpty()) {
             log.warn("Not found link for {}", shortlink);
-
-            String htmlFromResources;
-            try {
-                htmlFromResources = StreamUtils.copyToString(notFoundPage.getInputStream(), Charset.defaultCharset());
-            } catch (IOException e) {
-                log.error("Exception when reading HTML from resources!", e);
-                htmlFromResources = "Sorry, but shortlink is not found :("; // Default error
-            }
-
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.TEXT_HTML)

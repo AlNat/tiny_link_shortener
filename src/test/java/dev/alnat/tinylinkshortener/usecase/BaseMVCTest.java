@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.dto.LinkOutDTO;
 import dev.alnat.tinylinkshortener.dto.LinkVisitPageResult;
-import dev.alnat.tinylinkshortener.dto.VisitOutDTO;
-import dev.alnat.tinylinkshortener.dto.common.PaginalResult;
 import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.repository.LinkRepository;
 import dev.alnat.tinylinkshortener.repository.VisitRepository;
@@ -14,6 +12,7 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by @author AlNat on 16.01.2023.
  * Licensed by Apache License, Version 2.0
  */
-@SuppressWarnings({"SameParameterValue", "unused", "UnusedReturnValue", "SpringJavaAutowiredMembersInspection"})
+@SuppressWarnings({"SameParameterValue", "unused", "UnusedReturnValue"})
 public abstract class BaseMVCTest {
 
     @Autowired
@@ -57,22 +56,24 @@ public abstract class BaseMVCTest {
 
 
     @SneakyThrows
-    protected String redirect(String shortLink, boolean found) {
-        if (found) {
+    protected MockHttpServletResponse redirect(String shortLink, boolean shouldBeFound) {
+        if (shouldBeFound) {
             return this.mvc.perform(
                         get("/s/" + shortLink).header("User-Agent", "test")
                     )
                     .andDo(print())
                     .andExpect(status().is3xxRedirection())
                     .andReturn()
-                    .getResponse().getContentAsString(StandardCharsets.UTF_8);
+                    .getResponse();
         }
 
-        return this.mvc.perform(get("/s/" + shortLink))
+        return this.mvc.perform(
+                        get("/s/" + shortLink).header("User-Agent", "test")
+                )
                 .andDo(print())
                 .andExpect(status().isNotFound())
                 .andReturn()
-                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+                .getResponse();
     }
 
 

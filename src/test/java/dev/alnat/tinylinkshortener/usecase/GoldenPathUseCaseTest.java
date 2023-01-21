@@ -3,9 +3,11 @@ package dev.alnat.tinylinkshortener.usecase;
 import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
+import dev.alnat.tinylinkshortener.model.enums.VisitStatus;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 
 /**
  * Golden path of usage of API
- * Create link, go and get statistics
+ * Create link, go throw it and get statistics (should be saved)
  * <p>
  * Created by @author AlNat on 11.01.2023.
  * Licensed by Apache License, Version 2.0
@@ -25,7 +27,7 @@ import java.time.LocalDateTime;
 @DirtiesContext
 class GoldenPathUseCaseTest extends BaseMVCTest {
 
-    private static final String FIRST_SHORT_LINK = "H4T";
+    private static final String FIRST_SHORT_LINK = "H4T"; // due 1_000_000 in ALPHABET
 
     private static final String REDIRECT_TO = "https://google.com/q=test";
 
@@ -48,19 +50,29 @@ class GoldenPathUseCaseTest extends BaseMVCTest {
     @Order(2)
     @DisplayName("Step 2. Visit the link")
     void redirect() {
-        Assertions.assertNotNull(redirect(FIRST_SHORT_LINK, true));
+        var redirectResult = redirect(FIRST_SHORT_LINK, true);
+
+        Assertions.assertEquals(HttpStatus.FOUND.value(), redirectResult.getStatus(), "HTTP code is not correct!");
+        Assertions.assertEquals(REDIRECT_TO, redirectResult.getRedirectedUrl(), "Redirect link is not the same that's created!");
     }
 
     @Test
     @Order(3)
-    @DisplayName("Step 3. Check visits")
+    @DisplayName("Step 3. Check visits log")
     void checkVisits() {
         var visitsResult = getVisits(FIRST_SHORT_LINK);
 
         Assertions.assertEquals(200, visitsResult.getCode(), "Result code is not success!");
         Assertions.assertEquals(1, visitsResult.getData().size(), "Visit must be alone!");
 
-        // TODO check visit in devitalise
+        var visit = visitsResult.getData().get(0);
+        Assertions.assertTrue(visit.getVisitTime().isBefore(LocalDateTime.now()));
+        Assertions.assertNotNull(visit.getIp());
+        Assertions.assertNotNull(visit.getLink());
+        Assertions.assertNotNull(visit.getUserAgent());
+        Assertions.assertEquals(VisitStatus.SUCCESSFUL, visit.getStatus());
+
+        Assertions.assertEquals(REDIRECT_TO, visit.getLink().getOriginalLink());
     }
 
 }

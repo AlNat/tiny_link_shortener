@@ -1,0 +1,14 @@
+{
+  "visitTime": "2023-01-01 12:00:01",
+  "status": "EXPIRED",
+  "link": {
+    "originalLink": "https://google.com?q=test",
+    "id": 123,
+    "created": "2023-01-01 12:00:00",
+    "shortLink": "abc",
+    "currentVisitCount": 1,
+    "status": "CREATED"
+  },
+  "ip": "192.168.0.1",
+  "userAgent": "IE 6"
+}

@@ -1,0 +1,48 @@
+apiVersion: aps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tiny-link-shortener
+  name: tiny-link-shortener
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0%
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+        - image: ghcr.io/alnat/tiny_link_shortener:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            successThreshold: 1
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 5
+          name: tiny-link-shortener
+          ports:
+            - containerPort: 88
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            successThreshold: 1
+            tcpSocket:
+              port: 88
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "2"
+              memory: 1500Mi
+            requests:
+              cpu: "1"
+              memory: 1500Mi

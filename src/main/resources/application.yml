@@ -59,8 +59,8 @@ spring:
     execution:
       pool:
         allow-core-thread-timeout: ${EXECUTION_POOL_ALLOW_TIMEOUT:true}
-        core-size: ${EXECUTION_POOL_CORE_SIZE:100}
-        max-size: ${EXECUTION_POOL_MAX_SIZE:1000}
+        core-size: ${EXECUTION_POOL_CORE_SIZE:10}
+        max-size: ${EXECUTION_POOL_MAX_SIZE:100}
         keep-alive: ${EXECUTION_POOL_KEEP_ALIVE:60s}
         queue-capacity: ${EXECUTION_POOL_QUEUE_CAPACITY:100}
 

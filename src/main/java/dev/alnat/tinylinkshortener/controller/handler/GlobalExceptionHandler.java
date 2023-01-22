@@ -3,6 +3,9 @@ package dev.alnat.tinylinkshortener.controller.handler;
 import brave.Tracer;
 import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.dto.common.ResultFactory;
+import dev.alnat.tinylinkshortener.metric.MetricCollector;
+import dev.alnat.tinylinkshortener.metric.MetricsNames;
+import dev.alnat.tinylinkshortener.metric.TagNames;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +36,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Tracer tracer;
+    private final MetricCollector metricCollector;
 
 
     @Override
@@ -40,6 +44,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                      HttpHeaders headers,
                                                                      HttpStatus status,
                                                                      WebRequest request) {
+        metricCollector.inc(MetricsNames.HANDLED_ERROR, TagNames.ERROR_CODE.of("415"));
+
         return new ResponseEntity<>(
                 Result.error(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), HttpStatus.UNSUPPORTED_MEDIA_TYPE.getReasonPhrase()),
                 HttpStatus.OK
@@ -60,6 +66,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.warn("Validation error: {}", errors, ex);
 
+        metricCollector.inc(MetricsNames.HANDLED_ERROR, TagNames.ERROR_CODE.of("400"));
+
         return new ResponseEntity<>(ResultFactory.badRequest(errors), HttpStatus.OK);
     }
 
@@ -69,6 +77,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
                                                                   WebRequest request) {
+        metricCollector.inc(MetricsNames.HANDLED_ERROR, TagNames.ERROR_CODE.of("400"));
         return new ResponseEntity<>(
                 ResultFactory.badRequest(ex.getMessage()),
                 HttpStatus.OK
@@ -93,6 +102,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         log.warn("Validation error: {}", errors, ex);
 
+        metricCollector.inc(MetricsNames.HANDLED_ERROR, TagNames.ERROR_CODE.of("400"));
+
         return new ResponseEntity<>(ResultFactory.badRequest(errors), HttpStatus.OK);
     }
 
@@ -103,6 +114,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                              HttpStatus status,
                                                              WebRequest request) {
         log.error("Handle unexpected exception: {}", ex.getMessage(), ex);
+        metricCollector.inc(MetricsNames.HANDLED_ERROR, TagNames.ERROR_CODE.of("500"));
+
         final String traceId = tracer.currentSpan().context().traceIdString();
         return ResponseEntity
                 .internalServerError()
@@ -115,6 +128,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(final Exception ex) {
         log.error("Handle unexpected exception: {}", ex.getMessage(), ex);
+        metricCollector.inc(MetricsNames.HANDLED_ERROR, TagNames.ERROR_CODE.of("500"));
+
         final String traceId = tracer.currentSpan().context().traceIdString();
         return ResponseEntity
                 .internalServerError()

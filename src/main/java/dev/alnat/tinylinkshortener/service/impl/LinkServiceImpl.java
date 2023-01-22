@@ -6,6 +6,8 @@ import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.dto.common.ResultFactory;
 import dev.alnat.tinylinkshortener.engine.ShortLinkGeneratorResolver;
 import dev.alnat.tinylinkshortener.mapper.LinkMapper;
+import dev.alnat.tinylinkshortener.metric.MetricCollector;
+import dev.alnat.tinylinkshortener.metric.MetricsNames;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
 import dev.alnat.tinylinkshortener.repository.LinkRepository;
 import dev.alnat.tinylinkshortener.service.LinkService;
@@ -27,6 +29,7 @@ public class LinkServiceImpl implements LinkService {
     private final LinkRepository repository;
     private final LinkMapper mapper;
     private final ShortLinkGeneratorResolver linkGeneratorResolver;
+    private final MetricCollector metricCollector;
 
 
     @Override
@@ -53,6 +56,7 @@ public class LinkServiceImpl implements LinkService {
         link = repository.save(link);
 
         log.info("Generate new link {} to {} (id will be {}", link.getShortLink(), link.getOriginalLink(), link.getId());
+        metricCollector.inc(MetricsNames.NEW_LINK_CREATION);
 
         return ResultFactory.success(mapper.entityToDTO(link));
     }

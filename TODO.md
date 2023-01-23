@@ -53,7 +53,7 @@ Phase 3 - Operations
 Phase 4 - Features part 1
 -------
 
-* QR code generator for links
+* ~~QR code generator for links~~
 
 * Security
   - Spring security with authorized create request

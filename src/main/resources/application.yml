@@ -94,3 +94,7 @@ custom:
   proxy:
     is-behind-poxy: ${IS_BEHIND_PROXY:false}
     client-ip-address-header: ${CLIENT_IP_ADDRESS_HEADER:X-IP-ADDRESS}
+  qr:
+    height: ${QR_HEIGHT:200}
+    width: ${QR_WIDTH:200}
+    url: ${QR_ENDPOINT:http://localhost:80/s/%s}

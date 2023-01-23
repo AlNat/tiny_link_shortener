@@ -43,7 +43,7 @@ Phase 3 - Operations
 
 * ~~Description and documentation~~
   - ~~README about app~~
-  - Comments in DB and table for each status type with values
+  - ~~Comments in DB and table for each status type with values~~
 
 * ~~Infrastructure~~
   - ~~Grafana UI with prometheus based storage (with json representation in file in repo)~~
@@ -60,7 +60,7 @@ Phase 4 - Features part 1
   - Password auth for links visit (custom popup or browser default pop)
   - More test for all above
 
-* Separate API for private and public
+* Separate Swagger group API for private and public
 
 
 Phase 5 - Features part 2

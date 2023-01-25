@@ -73,7 +73,7 @@ Phase 5 - Features part 2
 
 * Saves not found links in visits table
 
-* SonarKube check outside of IDEA (SonarLint) in build
+* SonarKube check outside of IDEA (SonarLint) in build CI with quality gate
 
 
 Phase 6 - Features part 3

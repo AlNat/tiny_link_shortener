@@ -20,6 +20,8 @@ Features
 
 * Metrics of applications wit external dashboard (see below)
 
+* QR code for shortlinks
+
 
 Stack
 -----

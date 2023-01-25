@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,17 +37,35 @@ public class OpenAPIConfiguration {
                     properties = Map.of();
                 }
 
-                for (String propertyName : properties.keySet()) {
+                for (var property : properties.entrySet()) {
                     // Swagger datetime example change for date time properties
-                    Schema propertySchema = properties.get(propertyName);
+                    Schema propertySchema = property.getValue();
                     if (propertySchema instanceof DateTimeSchema) {
-                        properties.replace(propertyName, new StringSchema()
+                        properties.replace(property.getKey(), new StringSchema()
                                 .example("2023-01-01 10:00:00")
                                 .description(propertySchema.getDescription()));
                     }
                 }
             });
         };
+    }
+
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .displayName("public_api")
+                .pathsToExclude("/api/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi privateOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("private")
+                .displayName("private_api")
+                .pathsToMatch("/api/**")
+                .build();
     }
 
 }

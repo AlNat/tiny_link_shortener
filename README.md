@@ -20,6 +20,8 @@ Features
 
 * Metrics of applications wit external dashboard (see below)
 
+* QR code for shortlinks
+
 
 Stack
 -----
@@ -113,39 +115,43 @@ Business metrics:
 | link_search_timing_seconds_max   | Max of shortlink search time (reset every minute) | -                                |
 | link_visit_total                 | Visit to the all shortlinks                       | result_status (status of visits) |
 | handled_error_total              | REST API errors                                   | code (code in result block)      |
+| qr_generated                     | Count of generated QR codes                       | -                                |
 
 
 Configuration
 -------------
 
-| GROUP      | Parameter                     | Description                                                | Available values                     | Default                                              |
-|------------|-------------------------------|------------------------------------------------------------|--------------------------------------|------------------------------------------------------|
-| JVM        | SERVER_PORT                   | app port                                                   | positive int                         | 80                                                   |
-| JVM        | MANAGEMENT_SERVER_PORT        | actuator port                                              | positive int                         | 88                                                   |
-| JVM        | HTTP_MIN_THREADS              | Minimum HTTP thread pool size                              | positive int                         | 8                                                    |
-| JVM        | HTTP_MAX_THREADS              | Maximum HTTP thread pool size                              | positive int                         | 100                                                  |
-| JVM        | HTTP_MAX_QUEUE                | HTTP thread-poll queue                                     | positive int                         | 100                                                  |
-| Datasource | DB_URL                        | DB URL                                                     | JDBC URL                             | jdbc:postgresql://localhost:5432/tiny_link_shortener |
-| Datasource | DB_USER                       | DB username                                                | string                               | postgres                                             |
-| Datasource | DB_PASSWORD                   | DB password                                                | string                               | postgres                                             |
-| Datasource | DEFAULT_TRANSACTION_TIMEOUT   | Transaction timeout                                        | positive int                         | 30                                                   |
-| Datasource | DB_HIKARI_MIN_IDLE            | DB thread pool min size                                    | positive int                         | 4                                                    |
-| Datasource | DB_HIKARI_MAX_POOL_SIZE       | DB thread pool max size                                    | positive int                         | 4                                                    |
-| Datasource | DB_HIKARI_AUTO_COMMIT         | Auto-commit flag                                           | boolean flag                         | false                                                |
-| Datasource | DB_HIKARI_IDLE_TIMEOUT        | Timeout to shrink db poll                                  | positive int, in ms                  | 30000                                                |
-| Swagger    | SWAGGER_OPERATIONS            | Available methods in SwaggerUI                             | list of HTTP methods separate by `,` | "get", "post", "delete"                              |
-| Swagger    | ENABLE_SWAGGER                | Turn on Swagger UI in app                                  | boolean flag                         | true                                                 |
-| ThreadPool | EXECUTION_POOL_ALLOW_TIMEOUT  | Async thread poll (for long polling) allow timeout flag    | boolean flag                         | true                                                 |
-| ThreadPool | EXECUTION_POOL_CORE_SIZE      | Async thread poll (for long polling) size                  | positive int                         | 10                                                   |
-| ThreadPool | EXECUTION_POOL_MAX_SIZE       | Async thread poll (for long polling) max size              | positive int                         | 100                                                  |
-| ThreadPool | EXECUTION_POOL_KEEP_ALIVE     | Async thread poll (for long polling) keep alive timeout    | positive int                         | 60s                                                  |
-| ThreadPool | EXECUTION_POOL_QUEUE_CAPACITY | Async thread poll (for long polling) threads in queue size | Java duration                        | 100                                                  |
-| Custom     | BUSINESS_LOG_LEVEL            | Global log level ()                                        | TRACE, DEBUG, INFO, WARN, ERROR      | INFO                                                 |
-| Custom     | SHORT_LINK_GENERATOR          | Generators for shortlink                                   | SEQUENCE                             | SEQUENCE                                             |
-| Custom     | METRIC_PREFIX                 | Prefix for business metrics in micrometer                  | string                               |                                                      |
-| Custom     | DEFAULT_TASK_PAGING_TIMEOUT   | Timeout of paging and aggregate visits search, in seconds  | positive int                         | 30                                                   |
-| Custom     | IS_BEHIND_PROXY               | Flag of usage custom header to receive visits IP address   | boolean flag                         | false                                                |
-| Custom     | CLIENT_IP_ADDRESS_HEADER      | Custom header name of upper point                          | string                               | X-IP-ADDRESS                                         |
+| GROUP      | Parameter                     | Description                                                                     | Available values                     | Default                                              |
+|------------|-------------------------------|---------------------------------------------------------------------------------|--------------------------------------|------------------------------------------------------|
+| JVM        | SERVER_PORT                   | app port                                                                        | positive int                         | 80                                                   |
+| JVM        | MANAGEMENT_SERVER_PORT        | actuator port                                                                   | positive int                         | 88                                                   |
+| JVM        | HTTP_MIN_THREADS              | Minimum HTTP thread pool size                                                   | positive int                         | 8                                                    |
+| JVM        | HTTP_MAX_THREADS              | Maximum HTTP thread pool size                                                   | positive int                         | 100                                                  |
+| JVM        | HTTP_MAX_QUEUE                | HTTP thread-poll queue                                                          | positive int                         | 100                                                  |
+| Datasource | DB_URL                        | DB URL                                                                          | JDBC URL                             | jdbc:postgresql://localhost:5432/tiny_link_shortener |
+| Datasource | DB_USER                       | DB username                                                                     | string                               | postgres                                             |
+| Datasource | DB_PASSWORD                   | DB password                                                                     | string                               | postgres                                             |
+| Datasource | DEFAULT_TRANSACTION_TIMEOUT   | Transaction timeout                                                             | positive int                         | 30                                                   |
+| Datasource | DB_HIKARI_MIN_IDLE            | DB thread pool min size                                                         | positive int                         | 4                                                    |
+| Datasource | DB_HIKARI_MAX_POOL_SIZE       | DB thread pool max size                                                         | positive int                         | 4                                                    |
+| Datasource | DB_HIKARI_AUTO_COMMIT         | Auto-commit flag                                                                | boolean flag                         | false                                                |
+| Datasource | DB_HIKARI_IDLE_TIMEOUT        | Timeout to shrink db poll                                                       | positive int, in ms                  | 30000                                                |
+| Swagger    | SWAGGER_OPERATIONS            | Available methods in SwaggerUI                                                  | list of HTTP methods separate by `,` | "get", "post", "delete"                              |
+| Swagger    | ENABLE_SWAGGER                | Turn on Swagger UI in app                                                       | boolean flag                         | true                                                 |
+| ThreadPool | EXECUTION_POOL_ALLOW_TIMEOUT  | Async thread poll (for long polling) allow timeout flag                         | boolean flag                         | true                                                 |
+| ThreadPool | EXECUTION_POOL_CORE_SIZE      | Async thread poll (for long polling) size                                       | positive int                         | 10                                                   |
+| ThreadPool | EXECUTION_POOL_MAX_SIZE       | Async thread poll (for long polling) max size                                   | positive int                         | 100                                                  |
+| ThreadPool | EXECUTION_POOL_KEEP_ALIVE     | Async thread poll (for long polling) keep alive timeout                         | positive int                         | 60s                                                  |
+| ThreadPool | EXECUTION_POOL_QUEUE_CAPACITY | Async thread poll (for long polling) threads in queue size                      | Java duration                        | 100                                                  |
+| Custom     | BUSINESS_LOG_LEVEL            | Global log level ()                                                             | TRACE, DEBUG, INFO, WARN, ERROR      | INFO                                                 |
+| Custom     | SHORT_LINK_GENERATOR          | Generators for shortlink                                                        | SEQUENCE                             | SEQUENCE                                             |
+| Custom     | METRIC_PREFIX                 | Prefix for business metrics in micrometer                                       | string                               |                                                      |
+| Custom     | DEFAULT_TASK_PAGING_TIMEOUT   | Timeout of paging and aggregate visits search, in seconds                       | positive int                         | 30                                                   |
+| Custom     | IS_BEHIND_PROXY               | Flag of usage custom header to receive visits IP address                        | boolean flag                         | false                                                |
+| Custom     | CLIENT_IP_ADDRESS_HEADER      | Custom header name of upper point                                               | string                               | X-IP-ADDRESS                                         |
+| Custom.QR  | QR_HEIGHT                     | QR image height                                                                 | positive int                         | 200                                                  |
+| Custom.QR  | QR_WIDTH                      | QR image width                                                                  | positive int                         | 200                                                  |
+| Custom.QR  | QR_ENDPOINT                   | Full endpoint of shortlink, must have %s in place when shortlink will be placed | string                               | http://localhost:80/s/%s                             |
 
 
 

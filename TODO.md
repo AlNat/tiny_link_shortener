@@ -53,14 +53,13 @@ Phase 3 - Operations
 Phase 4 - Features part 1
 -------
 
-* QR code generator for links
+* ~~QR code generator for links~~
 
 * Security
-  - Spring security with authorized create request
-  - Password auth for links visit (custom popup or browser default pop)
-  - More test for all above
+  - Spring security with authorized API requests
+  - Add test for all above
 
-* Separate Swagger group API for private and public
+* ~~Separate Swagger group API for private and public~~
 
 
 Phase 5 - Features part 2
@@ -71,13 +70,15 @@ Phase 5 - Features part 2
   - Generator resolver
   - Stop list of some links
 
-* Saves not found links in visits table
+* Password auth for links visit (custom popup or browser default pop)
 
-* SonarKube check outside of IDEA (SonarLint) in build
+* Saves not found links in visits table
 
 
 Phase 6 - Features part 3
 -------------------------
+
+* SonarKube check outside of IDEA (SonarLint) in build CI with quality gate
 
 * Maybe some UI: not only REST API, but with vaadin\simple jsp
 

@@ -31,6 +31,8 @@
         <lombok.version>1.18.24</lombok.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
 
+        <qr.generator.version>3.5.1</qr.generator.version>
+
         <testcontainers.version>1.17.6</testcontainers.version>
     </properties>
 
@@ -100,6 +102,18 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!-- QR generator -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${qr.generator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${qr.generator.version}</version>
         </dependency>
 
         <dependency>

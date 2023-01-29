@@ -14,7 +14,8 @@ public enum MetricsNames {
     NEW_LINK_CREATION("link_created"),
     SEARCH_TIMING("link_search_timing"),
     SEARCH_RESULT("link_visit"),
-    HANDLED_ERROR("handled_error")
+    HANDLED_ERROR("handled_error"),
+    QR_CODE_GENERATED("qr_generated")
     ;
 
     private final String metricName;

@@ -16,7 +16,6 @@ import dev.alnat.tinylinkshortener.repository.VisitRepository;
 import dev.alnat.tinylinkshortener.service.VisitService;
 import dev.alnat.tinylinkshortener.util.Utils;
 import io.hypersistence.utils.hibernate.type.basic.Inet;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpHeaders;
@@ -37,15 +36,24 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class VisitServiceImpl implements VisitService {
+public class VisitServiceImpl extends BaseCRUDService<Visit, Long> implements VisitService {
     private final LinkRepository linkRepository;
 
-    private final VisitRepository repository;
+    private final VisitRepository visitRepository;
     private final VisitMapper mapper;
     private final LinkMapper linkMapper;
 
+    public VisitServiceImpl(LinkRepository linkRepository,
+                            VisitRepository repository,
+                            VisitMapper mapper,
+                            LinkMapper linkMapper) {
+        super(repository);
+        this.linkRepository = linkRepository;
+        this.visitRepository = repository;
+        this.mapper = mapper;
+        this.linkMapper = linkMapper;
+    }
 
     @Override
     @Transactional
@@ -75,7 +83,7 @@ public class VisitServiceImpl implements VisitService {
 
     @Override
     public List<VisitOutDTO> findByParams(final LinkVisitSearchRequest request) {
-        var visitList = repository.search(request);
+        var visitList = visitRepository.search(request);
         if (visitList.isEmpty()) {
             return Collections.emptyList();
         }
@@ -86,7 +94,7 @@ public class VisitServiceImpl implements VisitService {
 
     @Override
     public LinkVisitPageResult searchRawStatistics(final LinkVisitSearchRequest request) {
-        var page = repository.search(request);
+        var page = visitRepository.search(request);
         var result = new LinkVisitPageResult(request);
 
         if (page.isEmpty()) {

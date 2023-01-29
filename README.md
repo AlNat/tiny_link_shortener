@@ -206,3 +206,10 @@ app initializing and starts API interaction of some use-case of app: create the 
 
 The main reason of it to awoid to cover the all app of units and test the main processed of usage in almost real enviroment:
 DB in container, REST API interaction step-by-step
+
+
+### BaseProtoFramework
+
+There is a simple base framework for build Service and Model, 
+see `BaseService`, `BaseCRUDService` for details for service and `Model` and `Activating` for entity.
+Provides some basic CRUD operation for Entity

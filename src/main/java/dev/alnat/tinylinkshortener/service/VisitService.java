@@ -7,6 +7,7 @@ import dev.alnat.tinylinkshortener.dto.VisitOutDTO;
 import dev.alnat.tinylinkshortener.dto.common.PaginalResult;
 import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.model.Link;
+import dev.alnat.tinylinkshortener.model.Visit;
 import dev.alnat.tinylinkshortener.model.enums.VisitStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * Licensed by Apache License, Version 2.0
  */
 @SuppressWarnings("unused")
-public interface VisitService {
+public interface VisitService extends BaseService<Visit, Long> {
 
     Long saveNewVisit(final Link link, final VisitStatus status,
                       final String ip, final String userAgent, final HttpHeaders headers);

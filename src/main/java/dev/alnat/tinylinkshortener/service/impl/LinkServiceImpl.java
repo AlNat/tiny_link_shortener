@@ -8,11 +8,12 @@ import dev.alnat.tinylinkshortener.engine.ShortLinkGeneratorResolver;
 import dev.alnat.tinylinkshortener.mapper.LinkMapper;
 import dev.alnat.tinylinkshortener.metric.MetricCollector;
 import dev.alnat.tinylinkshortener.metric.MetricsNames;
+import dev.alnat.tinylinkshortener.model.Link;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
 import dev.alnat.tinylinkshortener.repository.LinkRepository;
 import dev.alnat.tinylinkshortener.service.LinkService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +23,25 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class LinkServiceImpl implements LinkService {
+public class LinkServiceImpl extends BaseCRUDService<Link, Long> implements LinkService {
 
     private final LinkRepository repository;
     private final LinkMapper mapper;
     private final ShortLinkGeneratorResolver linkGeneratorResolver;
     private final MetricCollector metricCollector;
+
+    @Autowired
+    public LinkServiceImpl(LinkRepository repository,
+                           LinkMapper mapper,
+                           ShortLinkGeneratorResolver linkGeneratorResolver,
+                           MetricCollector metricCollector) {
+        super(repository);
+        this.repository = repository;
+        this.mapper = mapper;
+        this.linkGeneratorResolver = linkGeneratorResolver;
+        this.metricCollector = metricCollector;
+    }
 
 
     @Override
@@ -52,6 +64,7 @@ public class LinkServiceImpl implements LinkService {
         var link = mapper.inDTO(dto);
         link.setShortLink(shortLink);
         link.setStatus(LinkStatus.CREATED);
+        // TODO SetUser
 
         link = repository.save(link);
 

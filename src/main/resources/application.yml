@@ -86,6 +86,7 @@ springdoc:
     disabled: false
 
 custom:
+  is-anonymous-link-creation-enabled: ${IS_ANONYMOUS_LINK_CREATION_ENABLED:true}
   short-link-generator-mode: ${SHORT_LINK_GENERATOR:SEQUENCE}
   metrics:
     metric-prefix: ${METRIC_PREFIX:}

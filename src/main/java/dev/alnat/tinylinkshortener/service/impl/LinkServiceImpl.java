@@ -10,10 +10,14 @@ import dev.alnat.tinylinkshortener.metric.MetricCollector;
 import dev.alnat.tinylinkshortener.metric.MetricsNames;
 import dev.alnat.tinylinkshortener.model.Link;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
+import dev.alnat.tinylinkshortener.model.enums.UserRole;
 import dev.alnat.tinylinkshortener.repository.LinkRepository;
+import dev.alnat.tinylinkshortener.repository.UserRepository;
 import dev.alnat.tinylinkshortener.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class LinkServiceImpl extends BaseCRUDService<Link, Long> implements LinkService {
-
-    private final LinkRepository repository;
+    private final UserRepository userRepository;
     private final LinkMapper mapper;
     private final ShortLinkGeneratorResolver linkGeneratorResolver;
     private final MetricCollector metricCollector;
@@ -35,12 +38,13 @@ public class LinkServiceImpl extends BaseCRUDService<Link, Long> implements Link
     public LinkServiceImpl(LinkRepository repository,
                            LinkMapper mapper,
                            ShortLinkGeneratorResolver linkGeneratorResolver,
-                           MetricCollector metricCollector) {
+                           MetricCollector metricCollector,
+                           UserRepository userRepository) {
         super(repository);
-        this.repository = repository;
         this.mapper = mapper;
         this.linkGeneratorResolver = linkGeneratorResolver;
         this.metricCollector = metricCollector;
+        this.userRepository = userRepository;
     }
 
 
@@ -64,8 +68,12 @@ public class LinkServiceImpl extends BaseCRUDService<Link, Long> implements Link
         var link = mapper.inDTO(dto);
         link.setShortLink(shortLink);
         link.setStatus(LinkStatus.CREATED);
-        // TODO SetUser
 
+        // TODO if anonymous
+
+        if(getAuthUser().isPresent()) {
+            link.setUser(userRepository.getReferenceById(getAuthUser().get().getId()));
+        }
         link = repository.save(link);
 
         log.info("Generate new link {} to {} (id will be {}", link.getShortLink(), link.getOriginalLink(), link.getId());
@@ -80,16 +88,18 @@ public class LinkServiceImpl extends BaseCRUDService<Link, Long> implements Link
         if (link.isEmpty()) {
             return ResultFactory.notFound();
         }
+        // TODO verify auth
 
         return ResultFactory.success(mapper.entityToDTO(link.get()));
     }
 
     @Override
     public Result<LinkOutDTO> find(final String shortLink) {
-        var link = repository.findByShortLink(shortLink);
+        var link = ((LinkRepository) repository).findByShortLink(shortLink);
         if (link.isEmpty()) {
             return ResultFactory.notFound();
         }
+        // TODO verify auth
 
         return ResultFactory.success(mapper.entityToDTO(link.get()));
     }
@@ -102,22 +112,31 @@ public class LinkServiceImpl extends BaseCRUDService<Link, Long> implements Link
             return ResultFactory.notFound();
         }
 
-        var link = linkOpt.get();
-        link.setStatus(LinkStatus.DELETED);
-        repository.save(link);
-
-        return ResultFactory.success();
+        return deactivate(linkOpt.get());
     }
 
     @Override
     @Transactional
     public Result<Void> deactivate(final String shortLink) {
-        var linkOpt = repository.findByShortLink(shortLink);
+        var linkOpt = ((LinkRepository) repository).findByShortLink(shortLink);
         if (linkOpt.isEmpty()) {
             return ResultFactory.notFound();
         }
 
-        var link = linkOpt.get();
+        return deactivate(linkOpt.get());
+    }
+
+    private Result<Void> deactivate(Link link) {
+        Hibernate.initialize(link.getUser());
+
+        // Only admin can delete anonymous links
+        if (link.getUser() == null && !hasRight(UserRole.ADMIN)) {
+            throw new InsufficientAuthenticationException("1");
+        } else if (getAuthUser().isPresent() &&
+                !link.getUser().getId().equals(getAuthUser().get().getId())) {
+            throw new InsufficientAuthenticationException("2");
+        }
+
         link.setStatus(LinkStatus.DELETED);
         repository.save(link);
 

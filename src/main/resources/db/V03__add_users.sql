@@ -18,5 +18,5 @@ ALTER TABLE tiny_link_shortener.link
 
 comment on column tiny_link_shortener.link.user_id is 'User who creat the link';
 
-CREATE INDEX CONCURRENTLY
-    IF NOT EXISTS link_user_id_idx ON tiny_link_shortener.link (user_id);
+-- Recommends do it concurently outsiide
+CREATE INDEX IF NOT EXISTS link_user_id_idx ON tiny_link_shortener.link (user_id);

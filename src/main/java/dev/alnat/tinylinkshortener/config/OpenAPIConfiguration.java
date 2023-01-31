@@ -1,12 +1,16 @@
 package dev.alnat.tinylinkshortener.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +21,7 @@ import java.util.Map;
  * Licensed by Apache License, Version 2.0
  */
 @Configuration
+@ConditionalOnProperty(name = "springdoc.api-docs.enabled", havingValue = "true")
 public class OpenAPIConfiguration {
 
     @Bean
@@ -65,7 +70,18 @@ public class OpenAPIConfiguration {
                 .group("private")
                 .displayName("private_api")
                 .pathsToMatch("/api/**")
+                .addOpenApiCustomiser(securedApiCustomizer())
                 .build();
+    }
+
+    public OpenApiCustomiser securedApiCustomizer() {
+        return openApi -> openApi
+                .addSecurityItem(new SecurityRequirement().addList("apiKey"))
+                .components(new Components()
+                        .addSecuritySchemes("apiKey", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name(Constants.AUTH_HEADER_NAME)));
     }
 
 }

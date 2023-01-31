@@ -116,6 +116,11 @@ Business metrics:
 | link_visit_total                 | Visit to the all shortlinks                       | result_status (status of visits) |
 | handled_error_total              | REST API errors                                   | code (code in result block)      |
 | qr_generated                     | Count of generated QR codes                       | -                                |
+// TODO Unacth request
+
+
+Security
+-------
 
 
 Configuration
@@ -152,6 +157,7 @@ Configuration
 | Custom.QR  | QR_HEIGHT                     | QR image height                                                                 | positive int                         | 200                                                  |
 | Custom.QR  | QR_WIDTH                      | QR image width                                                                  | positive int                         | 200                                                  |
 | Custom.QR  | QR_ENDPOINT                   | Full endpoint of shortlink, must have %s in place when shortlink will be placed | string                               | http://localhost:80/s/%s                             |
+// TODO Security params
 
 
 

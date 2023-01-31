@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +33,7 @@ import java.util.Optional;
  * Licensed by Apache License, Version 2.0
  */
 @Slf4j
-@RestController
+@Controller
 @Setter
 @RequestMapping(value = "/s/", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Controller for requesting shortlinks", description = "Front-end controller for users")

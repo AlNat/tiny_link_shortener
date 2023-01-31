@@ -10,6 +10,7 @@ import dev.alnat.tinylinkshortener.mapper.LinkMapper;
 import dev.alnat.tinylinkshortener.mapper.VisitMapper;
 import dev.alnat.tinylinkshortener.model.Link;
 import dev.alnat.tinylinkshortener.model.Visit;
+import dev.alnat.tinylinkshortener.model.enums.UserRole;
 import dev.alnat.tinylinkshortener.model.enums.VisitStatus;
 import dev.alnat.tinylinkshortener.repository.LinkRepository;
 import dev.alnat.tinylinkshortener.repository.VisitRepository;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -135,6 +137,14 @@ public class VisitServiceImpl extends BaseCRUDService<Visit, Long> implements Vi
         }
 
         var link = linkOpt.get();
+        Hibernate.initialize(link.getUser());
+
+        // Only admin can see not its links stats
+        if (link.getUser() == null || (getAuthUser().isPresent() &&
+                !link.getUser().getId().equals(getAuthUser().get().getId()))) {
+            throw new InsufficientAuthenticationException("2");
+        }
+
         Hibernate.initialize(link.getVisitList());
 
         var stat = new LinkVisitStatistic();

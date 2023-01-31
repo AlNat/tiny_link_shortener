@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,7 +29,6 @@ import static dev.alnat.tinylinkshortener.config.Constants.AUTH_HEADER_NAME;
  * Licensed by Apache License, Version 2.0
  */
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class HeaderKeySecurityFilter extends OncePerRequestFilter {
 

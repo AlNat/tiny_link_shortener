@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -44,15 +45,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public HeaderKeySecurityFilter securityFilter(UserService service, PasswordEncoder encoder,
-                                                  ObjectMapper mapper, UserMapper userMapper) {
+    public HeaderKeySecurityFilter securityFilter(final UserService service,
+                                                  final PasswordEncoder encoder,
+                                                  final ObjectMapper mapper,
+                                                  final UserMapper userMapper) {
         return new HeaderKeySecurityFilter(service, NOT_AUTH_ENDPOINTS, encoder, mapper, userMapper);
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HeaderKeySecurityFilter filter) throws Exception {
         return http
-                .addFilter(filter)
+                .addFilterBefore(filter, BasicAuthenticationFilter.class)
                 .requestCache().requestCache(new NullRequestCache()) // Disable caching
                 .and()
                 .csrf().disable()

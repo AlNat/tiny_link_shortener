@@ -4,6 +4,7 @@ import dev.alnat.tinylinkshortener.exceptions.NotFoundException;
 import dev.alnat.tinylinkshortener.model.Activating;
 import dev.alnat.tinylinkshortener.model.Model;
 import dev.alnat.tinylinkshortener.service.BaseService;
+import dev.alnat.tinylinkshortener.service.SecurityContextRetriever;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,10 +22,9 @@ import java.util.Optional;
  */
 @RequiredArgsConstructor
 @Transactional
-public abstract class BaseCRUDService<E extends Model<ID>, ID> implements BaseService<E, ID> {
+public abstract class BaseCRUDService<E extends Model<ID>, ID> implements BaseService<E, ID>, SecurityContextRetriever {
 
     protected final JpaRepository<E, ID> repository;
-
 
     @Override
     public E create(E entity) {

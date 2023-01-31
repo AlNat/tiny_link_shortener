@@ -116,6 +116,11 @@ Business metrics:
 | link_visit_total                 | Visit to the all shortlinks                       | result_status (status of visits) |
 | handled_error_total              | REST API errors                                   | code (code in result block)      |
 | qr_generated                     | Count of generated QR codes                       | -                                |
+// TODO Unacth request
+
+
+Security
+-------
 
 
 Configuration
@@ -152,6 +157,7 @@ Configuration
 | Custom.QR  | QR_HEIGHT                     | QR image height                                                                 | positive int                         | 200                                                  |
 | Custom.QR  | QR_WIDTH                      | QR image width                                                                  | positive int                         | 200                                                  |
 | Custom.QR  | QR_ENDPOINT                   | Full endpoint of shortlink, must have %s in place when shortlink will be placed | string                               | http://localhost:80/s/%s                             |
+// TODO Security params
 
 
 
@@ -206,3 +212,10 @@ app initializing and starts API interaction of some use-case of app: create the 
 
 The main reason of it to awoid to cover the all app of units and test the main processed of usage in almost real enviroment:
 DB in container, REST API interaction step-by-step
+
+
+### BaseProtoFramework
+
+There is a simple base framework for build Service and Model, 
+see `BaseService`, `BaseCRUDService` for details for service and `Model` and `Activating` for entity.
+Provides some basic CRUD operation for Entity

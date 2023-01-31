@@ -50,6 +50,7 @@ public class VisitController {
     @Value("${custom.paging.default-timeout}")
     private Duration pagingTimeout;
 
+    // TODO RoleUser, RoleAdmin
     @Operation(summary = "Paging visit results for short link")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request completed, see result in code field in response")
@@ -75,6 +76,7 @@ public class VisitController {
         return deferredResult;
     }
 
+    // TODO RoleUser
     @Operation(summary = "Aggregating visit results for short link")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request completed, see result in code field in response")

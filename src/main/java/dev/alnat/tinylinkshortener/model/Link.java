@@ -25,7 +25,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Table(name = "link")
-public class Link {
+public class Link implements Model<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,6 +67,11 @@ public class Link {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "link", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private List<Visit> visitList;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, referencedColumnName = "id")
+    private User user;
 
 
     public Integer getCurrentVisitCount() {

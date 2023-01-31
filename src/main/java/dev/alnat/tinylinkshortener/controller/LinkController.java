@@ -42,9 +42,11 @@ public class LinkController {
     public Result<LinkOutDTO> create(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "DTO for new short link request", required = true)
             @RequestBody @Valid final LinkInDTO dto) {
+        // TODO CheckAnonymous
         return linkService.create(dto);
     }
 
+    // TODO Secured User, Admin
     @Operation(summary = "Search shortlink by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request completed, see result in code field in response")
@@ -55,6 +57,7 @@ public class LinkController {
         return linkService.find(id);
     }
 
+    // TODO Secured User, Admin
     @Operation(summary = "Search shortlink by shortlink (as lookup method)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request completed, see result in code field in response")
@@ -65,6 +68,7 @@ public class LinkController {
         return linkService.find(shortLink);
     }
 
+    // TODO Secured User, Admin
     @Operation(summary = "Deactivate shortlink by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request completed, see result in code field in response")
@@ -75,6 +79,7 @@ public class LinkController {
         return linkService.deactivate(id);
     }
 
+    // TODO Secured User, Admin
     @Operation(summary = "Deactivate shortlink by shortlink")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request completed, see result in code field in response")

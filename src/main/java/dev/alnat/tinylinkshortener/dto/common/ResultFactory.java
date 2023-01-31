@@ -11,7 +11,6 @@ import java.util.Map;
  * Created by @author AlNat on 13.01.2023.
  * Licensed by Apache License, Version 2.0
  */
-@SuppressWarnings("rawtypes")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResultFactory {
 
@@ -33,6 +32,14 @@ public class ResultFactory {
 
     public static <T>Result<T> badRequest(final Map<String, List<String>> errors) {
         return Result.badRequest(HttpStatus.BAD_REQUEST.value(), errors);
+    }
+
+    public static <T> Result<T> unauthorized() {
+        return Result.error(HttpStatus.UNAUTHORIZED.value(), "Not authorized");
+    }
+
+    public static <T> Result<T> insufficientRights() {
+        return Result.error(HttpStatus.FORBIDDEN.value(), "Insufficient rights for operation");
     }
 
     public static <T>Result<T> notFound() {

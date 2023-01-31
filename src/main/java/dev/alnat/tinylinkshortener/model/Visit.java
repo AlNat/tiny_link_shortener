@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Table(name = "visit")
-public class Visit implements Serializable, Comparable<Visit> {
+public class Visit implements Serializable, Comparable<Visit>, Model<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

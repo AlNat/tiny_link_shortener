@@ -1,5 +1,6 @@
 package dev.alnat.tinylinkshortener.usecase;
 
+import dev.alnat.tinylinkshortener.E2ETest;
 import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
@@ -13,6 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 
+import static dev.alnat.tinylinkshortener.util.TestConstants.Link.FIRST_SHORT_LINK;
+import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
+
 /**
  * Use case: usage of the limit of visits.
  * Create link with few visit, visit link limit + 1 times, fetch stats: all should be success, last -- out of limit
@@ -20,18 +24,11 @@ import java.time.LocalDateTime;
  * Created by @author AlNat on 17.01.2023.
  * Licensed by Apache License, Version 2.0
  */
-@SpringBootTest
-@ContextConfiguration(classes = PostgreSQLTestContainerConfiguration.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Order for test
-@AutoConfigureMockMvc
-@DirtiesContext
+@E2ETest
 class LimitVisitUseCaseTest extends BaseMVCTest {
 
     private static final Integer MAX_VISIT_COUNT = 2;
 
-    private static final String FIRST_SHORT_LINK = "H4T"; // due 1_000_000 in ALPHABET
-
-    private static final String REDIRECT_TO = "https://google.com/q=test";
 
     @Test
     @Order(1)

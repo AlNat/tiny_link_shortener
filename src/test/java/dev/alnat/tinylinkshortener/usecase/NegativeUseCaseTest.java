@@ -1,5 +1,6 @@
 package dev.alnat.tinylinkshortener.usecase;
 
+import dev.alnat.tinylinkshortener.E2ETest;
 import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
 import dev.alnat.tinylinkshortener.dto.LinkOutDTO;
 import dev.alnat.tinylinkshortener.dto.common.Result;
@@ -20,10 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
  * Created by @author AlNat on 17.01.2023.
  * Licensed by Apache License, Version 2.0
  */
-@SpringBootTest
-@ContextConfiguration(classes = PostgreSQLTestContainerConfiguration.class)
-@AutoConfigureMockMvc
-@DirtiesContext
+@E2ETest
 class NegativeUseCaseTest extends BaseMVCTest {
 
     @Test

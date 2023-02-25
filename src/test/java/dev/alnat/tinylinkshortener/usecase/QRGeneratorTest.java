@@ -4,17 +4,14 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
-import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
+import dev.alnat.tinylinkshortener.E2ETest;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
 import dev.alnat.tinylinkshortener.util.TestUtil;
 import dev.alnat.tinylinkshortener.util.Utils;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 
@@ -29,13 +26,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by @author AlNat on 24.01.2023.
  * Licensed by Apache License, Version 2.0
  */
+@E2ETest
 @SpringBootTest(
         "custom.qr.url=http://localhost:80/s/%s" // override full endpoint to ensure qr link exactly the same
 )
-@ContextConfiguration(classes = PostgreSQLTestContainerConfiguration.class)
-@AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // Order for test
-@DirtiesContext
 class QRGeneratorTest extends BaseMVCTest {
 
     private static final String FIRST_SHORT_LINK = "H4T";

@@ -1,21 +1,21 @@
 package dev.alnat.tinylinkshortener.usecase;
 
-import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
-import dev.alnat.tinylinkshortener.model.Link;
-import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
+import dev.alnat.tinylinkshortener.E2ETest;
+import dev.alnat.tinylinkshortener.util.LinkBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
+
+import static dev.alnat.tinylinkshortener.util.TestConstants.Link.FIRST_SHORT_LINK;
+import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 
 /**
  * Use case: usage of the available date.
@@ -24,15 +24,10 @@ import java.util.stream.Stream;
  * Created by @author AlNat on 17.01.2023.
  * Licensed by Apache License, Version 2.0
  */
-@SpringBootTest
-@ContextConfiguration(classes = PostgreSQLTestContainerConfiguration.class)
-@AutoConfigureMockMvc
-@DirtiesContext
+@E2ETest
+@TestMethodOrder(MethodOrderer.Random.class) // Order for test
 class AvailableVisitUseCaseTest extends BaseMVCTest {
 
-    private static final String FIRST_SHORT_LINK = "H4T"; // due 1_000_000 in ALPHABET
-
-    private static final String REDIRECT_TO = "https://google.com/q=test";
 
     @AfterEach
     void clear() {
@@ -60,13 +55,10 @@ class AvailableVisitUseCaseTest extends BaseMVCTest {
     @MethodSource("availabilityCases")
     void testAvailabilityLink(LocalDateTime from, LocalDateTime to,
                               boolean shouldBeRedirected) {
-        var link = new Link();
-        link.setAvailableFrom(from);
-        link.setAvailableTo(to);
-        link.setCreated(LocalDateTime.now());
-        link.setOriginalLink(REDIRECT_TO);
-        link.setShortLink(FIRST_SHORT_LINK);
-        link.setStatus(LinkStatus.CREATED);
+        var link = LinkBuilder.someLink()
+                .withAvailableFrom(from)
+                .withAvailableTo(to)
+                .build();
 
         linkRepository.save(link);
 

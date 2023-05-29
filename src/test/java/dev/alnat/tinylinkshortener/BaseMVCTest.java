@@ -1,4 +1,4 @@
-package dev.alnat.tinylinkshortener.usecase;
+package dev.alnat.tinylinkshortener;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,9 +9,12 @@ import dev.alnat.tinylinkshortener.dto.common.Result;
 import dev.alnat.tinylinkshortener.repository.LinkRepository;
 import dev.alnat.tinylinkshortener.repository.VisitRepository;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -34,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Licensed by Apache License, Version 2.0
  */
 @SuppressWarnings({"SameParameterValue", "unused", "UnusedReturnValue"})
-public abstract class BaseMVCTest {
+public abstract class BaseMVCTest extends BaseContainerTest {
 
     @Autowired
     protected MockMvc mvc;

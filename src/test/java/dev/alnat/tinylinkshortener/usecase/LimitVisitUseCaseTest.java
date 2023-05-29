@@ -1,20 +1,15 @@
 package dev.alnat.tinylinkshortener.usecase;
 
+import dev.alnat.tinylinkshortener.BaseMVCTest;
 import dev.alnat.tinylinkshortener.E2ETest;
-import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
 import dev.alnat.tinylinkshortener.model.enums.VisitStatus;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 
-import static dev.alnat.tinylinkshortener.util.TestConstants.Link.FIRST_SHORT_LINK;
 import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 
 /**
@@ -29,6 +24,7 @@ class LimitVisitUseCaseTest extends BaseMVCTest {
 
     private static final Integer MAX_VISIT_COUNT = 2;
 
+    private static String testShortLink;
 
     @Test
     @Order(1)
@@ -39,11 +35,13 @@ class LimitVisitUseCaseTest extends BaseMVCTest {
         link.setMaxVisitCount(MAX_VISIT_COUNT);
 
         var result = saveNewLink(link);
+
+        testShortLink = result.getData().getShortLink();
+
         Assertions.assertEquals(200, result.getCode(), "Result code is not success!");
         Assertions.assertTrue(result.getData().getCreated().isBefore(LocalDateTime.now()), "Link not immediately saved!");
         Assertions.assertEquals(LinkStatus.CREATED, result.getData().getStatus(), "Link status not as new!");
         Assertions.assertEquals(0, result.getData().getCurrentVisitCount(), "Link already visited!");
-        Assertions.assertEquals(FIRST_SHORT_LINK, result.getData().getShortLink(), "Short link not expected, is new engine?");
     }
 
     @Test
@@ -51,7 +49,7 @@ class LimitVisitUseCaseTest extends BaseMVCTest {
     @DisplayName("Step 2. Visit the link max count")
     void visitBeforeLimit() {
         for (int count = 0; count < MAX_VISIT_COUNT; count++) {
-            var redirectResult = redirect(FIRST_SHORT_LINK, true);
+            var redirectResult = redirect(testShortLink, true);
 
             Assertions.assertEquals(HttpStatus.FOUND.value(), redirectResult.getStatus(), "HTTP code is not correct!");
             Assertions.assertEquals(REDIRECT_TO, redirectResult.getRedirectedUrl(), "Redirect link is not the same that's created!");
@@ -62,7 +60,7 @@ class LimitVisitUseCaseTest extends BaseMVCTest {
     @Order(3)
     @DisplayName("Step 3. Visit the link after the limit exceeded")
     void visitAfterLimit() {
-        var redirectResult = redirect(FIRST_SHORT_LINK, false);
+        var redirectResult = redirect(testShortLink, false);
 
         Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), redirectResult.getStatus(), "HTTP code is not correct! Should be not found");
     }
@@ -71,7 +69,7 @@ class LimitVisitUseCaseTest extends BaseMVCTest {
     @Order(4)
     @DisplayName("Step 4. Check visits log")
     void checkVisits() {
-        var visitsResult = getVisits(FIRST_SHORT_LINK);
+        var visitsResult = getVisits(testShortLink);
 
         Assertions.assertEquals(200, visitsResult.getCode(), "Result code is not success!");
         Assertions.assertEquals(MAX_VISIT_COUNT + 1, visitsResult.getData().size(), "Visit must be max + 1!");
@@ -88,6 +86,12 @@ class LimitVisitUseCaseTest extends BaseMVCTest {
                 .filter(v -> v.getStatus().equals(VisitStatus.SUCCESSFUL)).count());
         Assertions.assertEquals(1L, visitsResult.getData().stream()
                 .filter(v -> v.getStatus().equals(VisitStatus.TOO_MUCH_REQUEST)).count());
+    }
+
+    @Test
+    @Order(5)
+    void cleanUp() {
+        clearDB();
     }
 
 }

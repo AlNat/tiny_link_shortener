@@ -1,19 +1,13 @@
 package dev.alnat.tinylinkshortener.usecase;
 
+import dev.alnat.tinylinkshortener.BaseMVCTest;
 import dev.alnat.tinylinkshortener.E2ETest;
-import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
 import dev.alnat.tinylinkshortener.dto.LinkOutDTO;
 import dev.alnat.tinylinkshortener.dto.common.Result;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 /**
  * Some negative cases
@@ -23,6 +17,12 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @E2ETest
 class NegativeUseCaseTest extends BaseMVCTest {
+
+    @AfterEach
+    @BeforeEach
+    void clear() {
+        clearDB();
+    }
 
     @Test
     void testRedirectOfNotFoundLink() {

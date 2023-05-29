@@ -8,7 +8,6 @@ import lombok.With;
 
 import java.time.LocalDateTime;
 
-import static dev.alnat.tinylinkshortener.util.TestConstants.Link.FIRST_SHORT_LINK;
 import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 
 /**
@@ -28,7 +27,7 @@ public class LinkBuilder implements Builder<Link> {
     private LocalDateTime availableTo = null;
     private LocalDateTime created = LocalDateTime.now();
     private String originalLink = REDIRECT_TO;
-    private String shortLink = FIRST_SHORT_LINK;
+    private String shortLink = "SOMELINK";
     private LinkStatus status = LinkStatus.CREATED;
     private Integer maxVisitCount = null;
 

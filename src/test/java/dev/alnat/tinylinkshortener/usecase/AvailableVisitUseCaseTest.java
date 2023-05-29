@@ -1,11 +1,9 @@
 package dev.alnat.tinylinkshortener.usecase;
 
+import dev.alnat.tinylinkshortener.BaseMVCTest;
 import dev.alnat.tinylinkshortener.E2ETest;
 import dev.alnat.tinylinkshortener.util.LinkBuilder;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import static dev.alnat.tinylinkshortener.util.TestConstants.Link.FIRST_SHORT_LINK;
 import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 
 /**
@@ -28,13 +25,11 @@ import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 @TestMethodOrder(MethodOrderer.Random.class) // Order for test
 class AvailableVisitUseCaseTest extends BaseMVCTest {
 
-
     @AfterEach
+    @BeforeEach
     void clear() {
-        visitRepository.deleteAll();
-        linkRepository.deleteAll();
+        clearDB();
     }
-
 
     private static Stream<Arguments> availabilityCases() {
         return Stream.of(
@@ -63,12 +58,12 @@ class AvailableVisitUseCaseTest extends BaseMVCTest {
         linkRepository.save(link);
 
         if (shouldBeRedirected) {
-            var redirectResult = redirect(FIRST_SHORT_LINK, true);
+            var redirectResult = redirect(link.getShortLink(), true);
 
             Assertions.assertEquals(HttpStatus.FOUND.value(), redirectResult.getStatus(), "HTTP code is not correct!");
             Assertions.assertEquals(REDIRECT_TO, redirectResult.getRedirectedUrl(), "Redirect link is not the same that's created!");
         } else {
-            var redirectResult = redirect(FIRST_SHORT_LINK, false);
+            var redirectResult = redirect(link.getShortLink(), false);
             Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), redirectResult.getStatus(), "HTTP code is not correct! Should be not found");
         }
     }

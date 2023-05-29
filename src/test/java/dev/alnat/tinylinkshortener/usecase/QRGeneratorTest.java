@@ -4,6 +4,7 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
+import dev.alnat.tinylinkshortener.BaseMVCTest;
 import dev.alnat.tinylinkshortener.E2ETest;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
@@ -32,7 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 )
 class QRGeneratorTest extends BaseMVCTest {
 
-    private static final String FIRST_SHORT_LINK = "H4T";
+    private static String testShortLink;
+
     private static final byte[] SAVED_QR = TestUtil.readFromResourceFile("qr/qr.png");
 
     @Test
@@ -47,7 +49,8 @@ class QRGeneratorTest extends BaseMVCTest {
         Assertions.assertTrue(result.getData().getCreated().isBefore(LocalDateTime.now()), "Link not immediately saved!");
         Assertions.assertEquals(LinkStatus.CREATED, result.getData().getStatus(), "Link status not as new!");
         Assertions.assertEquals(0, result.getData().getCurrentVisitCount(), "Link already visited!");
-        Assertions.assertEquals(FIRST_SHORT_LINK, result.getData().getShortLink(), "Short link not expected, is new engine?");
+
+        testShortLink = result.getData().getShortLink();
     }
 
     @Test
@@ -55,7 +58,7 @@ class QRGeneratorTest extends BaseMVCTest {
     @DisplayName("Step 2. Create the QR and validate it")
     void generateQR() throws Exception {
         var res = this.mvc.perform(
-                        get("/api/v1/qr/" + FIRST_SHORT_LINK)
+                        get("/api/v1/qr/" + testShortLink)
                 )
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
@@ -80,8 +83,14 @@ class QRGeneratorTest extends BaseMVCTest {
 
         var url = new QRCodeReader().decode(bitmap);
 
-        Assertions.assertEquals("http://localhost:80/s/" + FIRST_SHORT_LINK, url.getText(),
+        Assertions.assertEquals("http://localhost:80/s/" + testShortLink, url.getText(),
                 "QR code not encodes correctly!");
+    }
+
+    @Test
+    @Order(4)
+    void cleanUp() {
+        clearDB();
     }
 
 }

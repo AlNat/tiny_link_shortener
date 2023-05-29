@@ -1,20 +1,15 @@
 package dev.alnat.tinylinkshortener.usecase;
 
+import dev.alnat.tinylinkshortener.BaseMVCTest;
 import dev.alnat.tinylinkshortener.E2ETest;
-import dev.alnat.tinylinkshortener.configuration.PostgreSQLTestContainerConfiguration;
 import dev.alnat.tinylinkshortener.dto.LinkInDTO;
 import dev.alnat.tinylinkshortener.model.enums.LinkStatus;
 import dev.alnat.tinylinkshortener.model.enums.VisitStatus;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 
-import static dev.alnat.tinylinkshortener.util.TestConstants.Link.FIRST_SHORT_LINK;
 import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 
 /**
@@ -27,6 +22,9 @@ import static dev.alnat.tinylinkshortener.util.TestConstants.Link.REDIRECT_TO;
 @E2ETest
 class GoldenPathUseCaseTest extends BaseMVCTest {
 
+    private static String testShortLink;
+
+
     @Test
     @Order(1)
     @DisplayName("Step 1. Create the link")
@@ -35,18 +33,20 @@ class GoldenPathUseCaseTest extends BaseMVCTest {
         link.setOriginalLink(REDIRECT_TO);
 
         var result = saveNewLink(link);
+
+        testShortLink = result.getData().getShortLink();
+
         Assertions.assertEquals(200, result.getCode(), "Result code is not success!");
         Assertions.assertTrue(result.getData().getCreated().isBefore(LocalDateTime.now()), "Link not immediately saved!");
         Assertions.assertEquals(LinkStatus.CREATED, result.getData().getStatus(), "Link status not as new!");
         Assertions.assertEquals(0, result.getData().getCurrentVisitCount(), "Link already visited!");
-        Assertions.assertEquals(FIRST_SHORT_LINK, result.getData().getShortLink(), "Short link not expected, is new engine?");
     }
 
     @Test
     @Order(2)
     @DisplayName("Step 2. Visit the link")
     void redirect() {
-        var redirectResult = redirect(FIRST_SHORT_LINK, true);
+        var redirectResult = redirect(testShortLink, true);
 
         Assertions.assertEquals(HttpStatus.FOUND.value(), redirectResult.getStatus(), "HTTP code is not correct!");
         Assertions.assertEquals(REDIRECT_TO, redirectResult.getRedirectedUrl(), "Redirect link is not the same that's created!");
@@ -56,7 +56,7 @@ class GoldenPathUseCaseTest extends BaseMVCTest {
     @Order(3)
     @DisplayName("Step 3. Check visits log")
     void checkVisits() {
-        var visitsResult = getVisits(FIRST_SHORT_LINK);
+        var visitsResult = getVisits(testShortLink);
 
         Assertions.assertEquals(200, visitsResult.getCode(), "Result code is not success!");
         Assertions.assertEquals(1, visitsResult.getData().size(), "Visit must be alone!");
@@ -69,6 +69,12 @@ class GoldenPathUseCaseTest extends BaseMVCTest {
         Assertions.assertEquals(VisitStatus.SUCCESSFUL, visit.getStatus());
 
         Assertions.assertEquals(REDIRECT_TO, visit.getLink().getOriginalLink());
+    }
+
+    @Test
+    @Order(4)
+    void cleanUp() {
+        clearDB();
     }
 
 }
